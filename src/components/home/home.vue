@@ -8,8 +8,8 @@
 
 <script type="text/ecmascript-6">
   import banner from './banner';
-  import a from './b5.png';
-  import b from './b6.png';
+  import a from './b.png';
+  import b from './c.png';
   export default {
     data() {
       return {

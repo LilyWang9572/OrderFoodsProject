@@ -16,30 +16,17 @@ var jsonWrite = function(res, ret) {
     res.json(ret);
   }
 };
-// 增加用户接口
+// 增加订单接口
 router.post('/addList', (req, res) => {
   var sql = $sql.list.add;
   var params = req.body;
   console.log(params);
-  conn.query(sql, [params.id, params.name, params.price, params.count], function(err, result) {
+  conn.query(sql, [params.id, params.name, params.price, params.count, params.instate], function(err, result) {
     if (err) {
       console.log(err);
     }
     if (result) {
       jsonWrite(res, result);
-    }
-  });
-});
-router.post('/selectList', (req, res) => {
-  var sql = 'select * from list where id = ?';
-  var params = req.body;
-  console.log(params);
-  conn.query(sql, [params.id], function(err, result) {
-    if (err) {
-      console.log(err);
-    }
-    if (result) {
-      res.send(result);
     }
   });
 });

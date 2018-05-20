@@ -1,8 +1,8 @@
 {
   "seller": {
     "name": "麦当劳餐厅",
-    "avatar": "http://img.hb.aicdn.com/059e93d35da33b24499314fe35c21c20a510de8b55bd-PXPIZX_fw658",
-    "description": "i'm lovin' it!",
+    "avatar": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524309457874&di=8edbecb9c51d17e08cf2a2251292aac6&imgtype=0&src=http%3A%2F%2Fm1.sinaimg.cn%2Fmaxwidth.640%2Fm1.sinaimg.cn%2Fd45a4277d71f9c8e55b9e7b917b4f85c_640_437.jpg",
+    "description": "I'm lovin' it!",
     "supports": [{
       "sid": "4",
       "name": "开发票",
@@ -16,9 +16,6 @@
       "10:30/22:00"
     ],
     "month_sales_count": "1648",
-    "images": [
-
-    ],
     "url": "https://www.ele.me/shop/555747",
     "score": "4.6",
     "comments_count": "571",

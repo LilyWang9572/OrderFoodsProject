@@ -3,16 +3,10 @@
 </template>
 
 <script type="text/ecmascript-6">
-var userId = 1;
-var orderList = new Array(10);
-function setFood(foodName, foodPrice, foodCount) {
-  this.food.name = foodName;
-  this.food.price = foodPrice;
-  this.food.count = foodCount;
-}
-function getFood() {
-  food;
-}
+var userId = '';
+var orderList = [];
+var state = '';
+
 function setList(foods) {
   foods.forEach((food) => {
     orderList.push(food);
@@ -21,21 +15,25 @@ function setList(foods) {
 function getList() {
   return orderList;
 }
-
 function setId(id) {
   userId = id;
 }
-function getId(){
+function getId() {
   return userId;
 }
+function getState() {
+  return state;
+}
+function setState(str) {
+  state = str;
+}
 export default {
-  userId,
-  setId,
   getId,
+  setId,
   setList,
   getList,
-  getFood,
-  setFood
+  getState,
+  setState
 }
 </script>
 

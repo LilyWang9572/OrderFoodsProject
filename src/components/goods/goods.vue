@@ -11,6 +11,7 @@
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
+        <!--food-list-hook用于dom操作，获取整体容器的高度-->
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
@@ -102,15 +103,17 @@
         this.foodsScroll.scrollToElement(el, 300);
         console.log(index);
       },
+      //用来对左右两侧dom结构进行初始化
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {
           click: true
         });
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
           click: true,
-          probeType: 3
+          probeType: 3 // 实时监测滚动的位置
         });
 
+        // 监听事件 获取位置
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
         });
@@ -164,15 +167,6 @@
   }
   .menu-item .current .text {
     border-none()
-  }
-  .icon {
-    display: inline-block;
-    vertical-align: top;
-    width: 12px;
-    height: 12px;
-    margin-right: 2px;
-    background-size: 12px 12px;
-    background-repeat: no-repeat;
   }
   .text {
     display: table-cell;

@@ -1,23 +1,52 @@
 <template>
-  <div class="shopcart">
-    <div class="content">
-      <div class="content-left">
-        <div class="logo-wrapper">
-          <div class="logo">
-            <i class="icon-shopping_cart"></i>
+  <div>
+    <div class="shopcart">
+      <div class="content" @click="toggleList">
+        <div class="content-left">
+          <div class="logo-wrapper">
+            <div class="logo">
+              <i class="icon-shopping_cart"></i>
+            </div>
+            <div class="num" v-show="totalCount>0">{{totalCount}}
+            </div>
           </div>
-          <div class="num" v-show="totalCount>0">{{totalCount}}</div>
+          <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
         </div>
-        <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
+        <div class="content-right" @click="pay">
+          <div class="pay" :class="{'enough':totalCount>0}">{{payDesc}}</div>
+        </div>
       </div>
-      <div class="content-right">
-        <div class="pay" :class="{'enough':totalCount>0}" @click="pay">{{payDesc}}</div>
-      </div>
+      <transition name="fold">
+        <div class="shopcart-list" v-show="listShow">
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty" @click="empty">清空</span>
+          </div>
+          <div class="list-content" ref="listContent">
+            <ul>
+              <li class="food" v-for="food in selectFoods">
+                <span class="name">{{food.name}}</span>
+                <div class="price">
+                  <span>￥{{food.price*food.count}}</span>
+                </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </transition>
     </div>
+    <transition name="fade">
+      <div class="list-mask" v-show="listShow" @click="hideList"></div>
+    </transition>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import BScroll from 'better-scroll';
+  import cartcontrol from '../cartcontrol/cartcontrol';
   export default {
     props: {
       selectFoods: {
@@ -29,7 +58,12 @@
               count: 1
             }
           ];
-        },
+        }
+      }
+    },
+    data() {
+      return {
+        fold: true
       }
     },
     computed: {
@@ -51,6 +85,27 @@
         if (this.totalPrice > 0) {
           return '选好了';
         }
+      },
+      listShow() {
+        //没有商品时
+        if(!this.totalCount) {
+          this.fold = true;
+          return false;
+        }
+        //取反
+        let show = !this.fold;
+        if (show) {
+          this.$nextTick(() => {
+            if(!this.scroll) {
+              this.scroll = new BScroll(this.$refs.listContent, {
+                click: true
+              });
+            } else {
+              this.scroll.refresh();
+            }
+          });
+        }
+        return show;
       }
     },
     methods: {
@@ -60,36 +115,59 @@
         window.alert('支付' + this.totalPrice + '元');
       },
       addList() {
-        var userId = window.prompt("输入您的手机号码");
+        //根据时间生成订单号
+        var date = new Date();
+        var hh = date.getHours().toString();
+        var mm = date.getMinutes().toString();
+        var ss = date.getSeconds().toString();
+        var ms = date.getMilliseconds().toString();
+        var userId = hh+mm+ss+ms;
         this.GLOBAL.setId(userId);
-        var id = this.GLOBAL.getId();
-        console.log(id);
+        console.log(this.GLOBAL.getId());
         this.GLOBAL.setList(this.selectFoods);
-        console.log(this.GLOBAL.getList());
+        this.GLOBAL.setState('进行中');
+        console.log(this.GLOBAL.getState());
         this.selectFoods.forEach((food) => {
           var foodName = food.name;
           var foodPrice = food.price;
           var foodCount = food.count;
           console.log(foodName);
-          //this.GLOBAL.setFood(foodName, foodPrice, foodCount);
-          //console.log(this.GLOBAL.getFood());
 
+          // 数据存入MySQL数据库
           this.$http.post('/api/list/addList', {
             id: userId,
             name: foodName,
             price: foodPrice,
-            count: foodCount
+            count: foodCount,
+            instate: 0
           }, {}).then((response) => {
             console.log(response);
-          })
+          });
+        });
+      },
+      toggleList() {
+        if(!this.totalCount) {
+          return;
+        }
+        this.fold = !this.fold;
+      },
+      hideList() {
+        this.fold = true;
+      },
+      empty() {
+        this.selectFoods.forEach((food) => {
+          food.count = 0;
         })
-
       }
-    }
+    },
+    components: {
+      cartcontrol
+    },
   };
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "../../common/stylus/mixin.styl";
   .shopcart {
     position: fixed;
     left: 0;
@@ -172,8 +250,86 @@
     text-align: center;
     font-size: 12px;
   }
-  .enough {
-    background: #eeb23b;
-    color: #ffffff;
+  .shopcart .shopcart-list {
+    position: absolute;
+    left:0;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    transform: translate3d(0, -100%, 0);
+  }
+  .shopcart-list fold-enter-active, fold-leave-active {
+    transition: all 0.5s;
+  }
+  .shopcart-list fold-enter, fold-leave-active {
+    transform: translate3d(0, 0, 0);
+  }
+  .shopcart-list .list-header {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 18px;
+    background: #f3f5f7;
+    border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+  }
+  .list-header .title {
+    float: left;
+    font-size: 14px;
+    font-weight: 200;
+    color: rgb(7, 17, 27);
+  }
+  .list-header .empty {
+    float: right;
+    font-size: 12px;
+    color: #eeb23b;
+  }
+  .shopcart-list .list-content {
+    width: 100%;
+    padding: 0;
+    max-height: 217px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  .list-content .food {
+    position: relative;
+    padding: 12px 0;
+    box-sizing: border-box;
+    border-1px(rgba(7, 17, 27, 0.1));
+  }
+  .list-content .food .name {
+    line-height: 24px;
+    font-size: 14px;
+    color: rgb(7,17,27);
+  }
+  .list-content .food .price {
+    position: absolute;
+    right: 90px;
+    bottom: 12px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #eeb23b;
+  }
+  .list-content .food .cartcontrol-wrapper {
+    position: absolute;
+    right: 0;
+    bottom: 6px;
+  }
+  .list-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    backdrop-filter: blur(10px);
+    opacity: 1;
+    background: rgba(7,17,27,0.6);
+  }
+  .list-mask fade-enter-active, fade-leave-active {
+    transition: all 0.5s;
+  }
+  .list-mask fade-enter, fade-leave-to {
+    opacity: 0;
+    background: rgba(7,17,27,0);
   }
 </style>

@@ -7,7 +7,7 @@
       </div>
       <div class="list-num-wrapper">
         <div class="list-num-title">订单号</div>
-        <div class="list-num-content">{{$userId}}</div>
+        <div class="list-num-content">{{this.GLOBAL.getId()}}</div>
       </div>
       <div class="list-content-wrapper">
         <div class="list-content-title">点餐内容</div>
@@ -31,25 +31,21 @@
   export default {
     data() {
       return {
-        orderList: []
+        orderList: this.GLOBAL.getList(),
+        userId: this.GLOBAL.getId(),
+        listState: this.GLOBAL.getState(),
       };
     },
-    created() {
-      var list = this.GLOBAL.getList();
-      list.forEach((food) => {
-        console.log(food.name);
-        this.orderList.push(food);
-      });
-    },
-    computed: {
-      listState() {
+    watch: {
+      function () {
         var list = this.GLOBAL.getList();
-        if (list.length > 0) {
-          return '进行中';
-        } else {
-          return '没有订单';
-        }
-      }
+        list.forEach((food) => {
+          console.log(food.name);
+          this.orderList.push(food);
+        });
+        this.userId = this.GLOBAL.getId();
+        this.listState = this.GLOBAL.getState();
+      },
     }
   }
 </script>

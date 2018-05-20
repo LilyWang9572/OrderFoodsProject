@@ -10,6 +10,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 // 后端 api路由
 app.use('/api/list', userApi);
-//监听端口
+// 监听端口
 app.listen(3000);
 console.log('success listen at port:3000');

@@ -25,10 +25,10 @@ var app = express()
 var appDate=require('../data.json');
 var seller=appDate.seller;
 var goods=appDate.goods;
-var ratings=appDate.ratings;
 //定义路由
 var apiRoutes=express.Router();
 
+// 接口
 apiRoutes.get('/seller',function(req,res){
   res.json({
     errno:0,
@@ -40,13 +40,6 @@ apiRoutes.get('/goods',function(req,res) {
   res.json({
     errno:0,
     data:goods
-  });
-});
-
-apiRoutes.get('/ratings',function(req,res) {
-  res.json({
-    errno:0,
-    data:ratings
   });
 });
 

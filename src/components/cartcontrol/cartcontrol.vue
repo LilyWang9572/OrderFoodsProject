@@ -29,8 +29,6 @@
         } else {
           this.food.count++;
         }
-        // 触发当前实例上的事件。附加参数都会传给监听器回调。子组件向父传参（.$emit）
-        this.$emit('add', event.target);
       },
       decreaseCart(event) {
         if (!event._constructed) {
@@ -62,17 +60,17 @@
     transition: all 0.4s linear;
     transform: rotate(0);
   }
-  .cartcontrol .cart-decrease .move-enter-active {
+  .cartcontrol .cart-decrease move-enter-active {
     transition: all 0.4s linear;
   }
-  .cartcontrol .cart-decrease .move-leave-active {
+  .cartcontrol .cart-decrease move-leave-active {
     transition: all 0.4s linear;
   }
-  .cartcontrol .cart-decrease .move-enter {
+  .cartcontrol .cart-decrease move-enter {
     opacity: 0;
     transform: translate3d(24px, 0, 0);
   }
-  .cartcontrol .cart-decrease .move-leave-active {
+  .cartcontrol .cart-decrease move-leave-active {
     opacity: 0;
     transform: translate3d(24px, 0, 0);
   }

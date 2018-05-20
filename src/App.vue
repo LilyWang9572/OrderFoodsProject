@@ -4,6 +4,9 @@
   <div>
     <v-header :seller = "seller"></v-header>
     <div class="tab border-1px" >
+      <!-- 使用 router-link 组件来导航. -->
+      <!-- 通过传入 `to` 属性指定链接. -->
+      <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
       <div class="tab-item">
         <router-link to="/home">首页</router-link>
       </div>
@@ -15,6 +18,8 @@
       </div>
     </div>
     <!--路由外链-->
+    <!-- 路由出口 -->
+    <!-- 路由匹配到的组件将渲染在这里 -->
     <keep-alive>
       <router-view :seller="seller"></router-view>
     </keep-alive>
